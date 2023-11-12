@@ -1,113 +1,166 @@
-import Image from 'next/image'
+'use client';
+
+import { defaultPathes } from '@/lib/utils';
+import { toPng } from 'html-to-image';
+import { Download, File, Folder } from 'lucide-react';
+import {
+  ChangeEventHandler,
+  ClipboardEventHandler,
+  useRef,
+  useState,
+} from 'react';
 
 export default function Home() {
+  const [input, setInput] = useState(defaultPathes.join('\n'));
+  const ref = useRef<HTMLDivElement>(null);
+  const dataUrl = useRef<string>();
+  const [image, setImage] = useState<string>();
+
+  const handleInputChange: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
+    setInput(e.target.value);
+  };
+
+  const generate = async () => {
+    dataUrl.current = await toPng(ref.current!, { quality: 0.95 });
+    setImage(dataUrl.current);
+
+    const link = document.createElement('a');
+    link.download = 'my-image-name.png';
+    link.href = dataUrl.current;
+    link.click();
+  };
+
+  const onPaste: ClipboardEventHandler<HTMLTextAreaElement> = (e) => {
+    const pastedData = e.clipboardData;
+    const value = pastedData?.getData('text/plain');
+
+    if (value.match(/node_modules|\.git|\.next/)) {
+      e.preventDefault();
+      const result = treeToYAML(value!);
+      setInput(result);
+    }
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div>
+      <div className="grid grid-cols-3 h-screen">
+        <textarea
+          value={input}
+          onPaste={onPaste}
+          spellCheck={false}
+          className="p-6 bg-zinc-950 text-zinc-700 resize-none focus:outline-none"
+          onChange={handleInputChange}
+        />
+        <div className="bg-zinc-800 p-6 flex items-center justify-center col-span-2">
+          <div className="m-atuo w-full">
+            <div
+              ref={ref}
+              className="bg-zinc-900 text-gray-50 relative rounded-md overflow-hidden shadow-lg"
+            >
+              <div className="px-10 py-10 aspect-video overflow-auto flex items-center justify-center">
+                <div className="m-auto">
+                  <TreeRender src={input} />
+                </div>
+              </div>
+              <span className="h-10 absolute inset-x-0 top-0 bg-gradient-to-b from-zinc-900"></span>
+              <span className="h-10 absolute inset-x-0 bottom-0 bg-gradient-to-t from-zinc-900"></span>
+            </div>
+
+            <button
+              onClick={generate}
+              className="bg-zinc-900 mx-auto mt-4 w-10 h-10 grid place-content-center rounded-full shadow-lg text-zinc-400"
+            >
+              <Download size={20} />
+              <span className="sr-only">ダウンロード</span>
+            </button>
+          </div>
         </div>
       </div>
+    </div>
+  );
+}
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+function treeToYAML(src: string) {
+  const lines = src.split('\n');
+  return lines
+    .filter((line) => !line.match(/node_modules|\.git|\.next/))
+    .filter((line) => line !== '.')
+    .map((line) => line.replace('./', ''))
+    .join('\n');
+}
+
+const TreeRender = ({ src }: { src: string }) => {
+  const tree = buildTree(src);
+
+  return (
+    <ul>
+      {tree.map((item, i) => {
+        return <Item key={item.name + i} item={item} />;
+      })}
+    </ul>
+  );
+};
+
+type Item = {
+  name: string;
+  children: Item[];
+};
+
+const Item = ({ item }: { item: Item }) => {
+  const [highlight, setHiglight] = useState(false);
+  const isFolder = item.children.length > 0;
+
+  return (
+    <li className="relative px-4 text-zinc-300">
+      <button
+        className="absolute inset-0"
+        onClick={() => setHiglight((v) => !v)}
+      ></button>
+      {highlight && (
+        <span className="pointer-events-none absolute block -inset-1 border-2 border-pink-500 rounded-lg"></span>
+      )}
+      <div className="flex items-center py-2">
+        {isFolder ? (
+          <Folder size={16} className="mr-3 text-zinc-500" />
+        ) : (
+          <File size={16} className="mr-3 text-zinc-500" />
+        )}
+        {item.name}
       </div>
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+      {isFolder && (
+        <ul className="pl-4">
+          {item.children.map((child, i) => (
+            <Item key={`${item.name}-child-${i}`} item={child} />
+          ))}
+        </ul>
+      )}
+    </li>
+  );
+};
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+function buildTree(src: string) {
+  const paths = src.split('\n');
+  const root: Item[] = [];
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
+  paths.forEach((path) => {
+    const parts = path.split('/').filter((part) => part.length > 0);
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    let currentLevel = root;
+    parts.forEach((part) => {
+      let existingPath = currentLevel.find((p) => p.name === part);
+
+      if (!existingPath) {
+        existingPath = {
+          name: part,
+          children: [],
+        };
+        currentLevel.push(existingPath);
+      }
+
+      currentLevel = existingPath.children;
+    });
+  });
+
+  return root;
 }
