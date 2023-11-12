@@ -36,7 +36,8 @@ export default function Home() {
           value={input}
           onPaste={onPaste}
           spellCheck={false}
-          className="p-6 bg-zinc-950 text-zinc-700 resize-none focus:outline-none"
+          placeholder="find . | pbcopy"
+          className="p-6 bg-zinc-950 text-zinc-700 resize-none focus:outline-none placeholder-zinc-700"
           onChange={handleInputChange}
         />
         <div className="bg-zinc-800 p-6 flex items-center justify-center col-span-2">
