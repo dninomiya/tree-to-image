@@ -44,7 +44,7 @@ export default function Home() {
           <div className="m-atuo w-full max-w-[900px]">
             <div
               ref={ref}
-              className="bg-zinc-900 text-gray-50 relative shadow-lg"
+              className="bg-zinc-900 text-gray-50 relative overflow-hidden shadow-lg"
             >
               <div className="px-10 py-10 aspect-video overflow-auto flex items-center justify-center">
                 <div className="m-auto">
