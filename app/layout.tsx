@@ -1,12 +1,17 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
-
 export const metadata: Metadata = {
-  title: 'Tree to SVG',
-  description: 'Tree SVG Generator',
+  metadataBase: new URL('https://dninomiya.github.io/tree-to-image'),
+  title: 'Tree to Image',
+  description: 'Tree to Image',
+  openGraph: {
+    title: 'Tree to Image',
+    description: 'Tree to Image',
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
 };
 
 export default function RootLayout({
@@ -17,7 +22,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>{children}</body>
-      {/* <body className={inter.className}>{children}</body> */}
     </html>
   );
 }
