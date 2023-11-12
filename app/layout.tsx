@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://dninomiya.github.io/tree-to-image'),
+  metadataBase: new URL('https://dninomiya.github.io'),
   title: 'Tree to Image',
   description: 'Tree to Image',
   openGraph: {
