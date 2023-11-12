@@ -31,17 +31,17 @@ export default function Home() {
 
   return (
     <div>
-      <div className="grid grid-cols-3 h-screen">
+      <div className="flex h-screen">
         <textarea
           value={input}
           onPaste={onPaste}
           spellCheck={false}
           placeholder="find . | pbcopy"
-          className="p-6 bg-zinc-950 text-zinc-700 resize-none focus:outline-none placeholder-zinc-700"
+          className="p-6 bg-zinc-950 text-zinc-600 resize-none focus:outline-none placeholder-zinc-800 w-[400px]"
           onChange={handleInputChange}
         />
-        <div className="bg-zinc-800 p-6 flex items-center justify-center col-span-2">
-          <div className="m-atuo w-full">
+        <div className="bg-zinc-800 p-6 flex items-center justify-center flex-1">
+          <div className="m-atuo w-full max-w-[900px]">
             <div
               ref={ref}
               className="bg-zinc-900 text-gray-50 relative rounded-md overflow-hidden shadow-lg"
