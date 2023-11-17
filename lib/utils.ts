@@ -7,7 +7,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const defaultPathes = [
-  'app',
   'app/favicon.ico',
   'app/layout.tsx',
   'app/page.tsx',
@@ -20,11 +19,9 @@ export const defaultPathes = [
   'components',
   'components/ui',
   'components/ui/button.tsx',
-  'public',
   'public/vercel.svg',
   'public/next.svg',
   'package.json',
-  'lib',
   'lib/utils.ts',
   'components.json',
   'tsconfig.json',
