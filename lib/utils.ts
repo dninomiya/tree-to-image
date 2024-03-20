@@ -8,25 +8,9 @@ export function cn(...inputs: ClassValue[]) {
 
 export const defaultPathes = [
   'app/favicon.ico',
-  'app/layout.tsx',
-  'app/page.tsx',
-  'app/globals.css',
-  'bun.lockb',
-  'next.config.js',
-  'next-env.d.ts',
-  'README.md',
-  'tailwind.config.ts',
-  'components',
-  'components/ui',
-  'components/ui/button.tsx',
-  'public/vercel.svg',
-  'public/next.svg',
-  'package.json',
-  'lib/utils.ts',
-  'components.json',
-  'tsconfig.json',
-  'postcss.config.js',
-  '.eslintrc.json',
+  'blank-directory/',
+  'public # comment/vercel.svg',
+  'public # comment/next.svg # file comment',
 ];
 
 export const getTreeData = (src: string) => {
@@ -42,7 +26,9 @@ export const getTreeData = (src: string) => {
 
     let currentLevel = root;
     parts.forEach((part) => {
-      let existingPath = currentLevel.find((p) => p.name === part);
+      let existingPath = currentLevel.find(
+        (p) => p.name.split(' # ')[0] === part
+      );
 
       if (!existingPath) {
         existingPath = {

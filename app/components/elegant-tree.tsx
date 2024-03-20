@@ -21,6 +21,7 @@ const Item = ({ item }: { item: ItemData }) => {
   const [highlight, setHiglight] = useState(false);
   const isFolder = item.children.length > 0;
   const children = item.children.filter((child) => child.name);
+  const [name, comment] = item.name.split('# ');
 
   return (
     <li className="relative px-4 text-zinc-300">
@@ -31,19 +32,24 @@ const Item = ({ item }: { item: ItemData }) => {
       {highlight && (
         <span className="pointer-events-none absolute block -inset-1 border-2 border-pink-500 rounded-lg"></span>
       )}
-      <div className="flex items-center py-2">
+      <div className="flex items-center gap-3 py-2">
         {isFolder ? (
-          <Folder size={16} className="mr-3 text-zinc-500" />
+          <Folder size={16} className="text-muted-foreground" />
         ) : (
-          <File size={16} className="mr-3 text-zinc-500" />
+          <File size={16} className="text-muted-foreground" />
         )}
-        {item.name}
+        {name}
+        {comment && (
+          <span className="font-normal text-sm text-muted-foreground/70">
+            - {comment}
+          </span>
+        )}
       </div>
 
       {children.length > 0 && (
         <ul className="pl-4">
           {children.map((child, i) => (
-            <Item key={`${item.name}-child-${i}`} item={child} />
+            <Item key={`${name}-child-${i}`} item={child} />
           ))}
         </ul>
       )}
