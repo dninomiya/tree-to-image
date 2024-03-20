@@ -9,8 +9,9 @@ export function cn(...inputs: ClassValue[]) {
 export const defaultPathes = [
   'app/favicon.ico',
   'blank-directory/',
-  'public # comment/vercel.svg',
-  'public # comment/next.svg # file comment',
+  'public # comment',
+  'public/vercel.svg',
+  'public/next.svg # file comment',
 ];
 
 export const getTreeData = (src: string) => {
