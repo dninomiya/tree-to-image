@@ -24,7 +24,7 @@ const Item = ({ item }: { item: ItemData }) => {
   const [name, comment] = item.name.split('# ');
 
   return (
-    <li className="relative px-4 text-zinc-300">
+    <li className="relative px-4 dark:text-zinc-300 text-zinc-500">
       <button
         className="absolute inset-0"
         onClick={() => setHiglight((v) => !v)}

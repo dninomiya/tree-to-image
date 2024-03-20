@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import { toPng } from 'html-to-image';
 import { Download } from 'lucide-react';
 import React, { RefObject } from 'react';
@@ -15,12 +16,14 @@ export default function DownloadButton({
   };
 
   return (
-    <button
+    <Button
+      size="icon"
+      variant="ghost"
       onClick={downloadImage}
-      className="bg-zinc-900 mx-auto mt-4 w-10 h-10 grid place-content-center rounded-full shadow-lg text-zinc-400"
+      className="rounded-full"
     >
       <Download size={20} />
       <span className="sr-only">ダウンロード</span>
-    </button>
+    </Button>
   );
 }

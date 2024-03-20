@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import GithubLink from '@/app/components/github-link';
 import AuthorLink from '@/app/components/author-link';
+import { ThemeProvider } from '@/app/components/theme-provider';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://dninomiya.github.io'),
@@ -22,11 +23,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        {children}
-        <AuthorLink />
-        <GithubLink href="https://github.com/dninomiya/tree-to-image/tree/main" />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <AuthorLink />
+          <GithubLink href="https://github.com/dninomiya/tree-to-image/tree/main" />
+        </ThemeProvider>
       </body>
     </html>
   );
