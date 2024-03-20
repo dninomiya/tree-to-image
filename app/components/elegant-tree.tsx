@@ -19,7 +19,8 @@ export default function ElegantTree({ src }: { src: string }) {
 
 const Item = ({ item }: { item: ItemData }) => {
   const [highlight, setHiglight] = useState(false);
-  const isFolder = item.children.length > 0 || item.name.endsWith('/');
+  const isFolder = item.children.length > 0;
+  const children = item.children.filter((child) => child.name);
 
   return (
     <li className="relative px-4 text-zinc-300">
@@ -39,9 +40,9 @@ const Item = ({ item }: { item: ItemData }) => {
         {item.name}
       </div>
 
-      {isFolder && (
+      {children.length > 0 && (
         <ul className="pl-4">
-          {item.children.map((child, i) => (
+          {children.map((child, i) => (
             <Item key={`${item.name}-child-${i}`} item={child} />
           ))}
         </ul>

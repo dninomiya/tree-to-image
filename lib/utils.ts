@@ -34,7 +34,11 @@ export const getTreeData = (src: string) => {
   const root: ItemData[] = [];
 
   paths.forEach((path) => {
-    const parts = path.split('/').filter((part) => part.length > 0);
+    if (!path) {
+      return;
+    }
+
+    const parts = path.split('/');
 
     let currentLevel = root;
     parts.forEach((part) => {
