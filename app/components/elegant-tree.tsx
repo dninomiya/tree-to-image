@@ -19,7 +19,7 @@ export default function ElegantTree({ src }: { src: string }) {
 
 const Item = ({ item }: { item: ItemData }) => {
   const [highlight, setHiglight] = useState(false);
-  const isFolder = item.children.length > 0;
+  const isFolder = item.children.length > 0 || item.name.endsWith('/');
 
   return (
     <li className="relative px-4 text-zinc-300">
