@@ -11,7 +11,10 @@ export default function DownloadButton({
   const downloadImage = async () => {
     const link = document.createElement('a');
     link.download = 'my-image-name.png';
-    link.href = await toPng(target.current!, { quality: 0.95, pixelRatio: 10 });
+    link.href = await toPng(target.current!, {
+      quality: 0.95,
+      pixelRatio: 2,
+    });
     link.click();
   };
 
