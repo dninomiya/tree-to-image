@@ -21,7 +21,7 @@ const Item = ({ item }: { item: ItemData }) => {
   const [highlight, setHiglight] = useState(false);
   const isFolder = item.children.length > 0;
   const children = item.children.filter((child) => child.name);
-  const [name, comment] = item.name.split('# ');
+  const [name, comment] = item.name.split(' # ');
 
   return (
     <li className="relative px-4 dark:text-zinc-300 text-zinc-500">
@@ -40,7 +40,7 @@ const Item = ({ item }: { item: ItemData }) => {
         )}
         {name}
         {comment && (
-          <span className="font-normal text-sm text-muted-foreground/70">
+          <span className="font-normal text-sm text-muted-foreground/70 -ml-[6px]">
             - {comment}
           </span>
         )}
