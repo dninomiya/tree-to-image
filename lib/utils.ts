@@ -6,12 +6,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const defaultPathes = [
+export const defaultPaths = [
   'app/favicon.ico',
   'blank-directory/',
   'public # comment',
   'public/vercel.svg',
   'public/next.svg # file comment',
+  'lib # directory only comment/',
 ];
 
 export const getTreeData = (src: string) => {

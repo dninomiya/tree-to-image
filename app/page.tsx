@@ -4,7 +4,7 @@ import DownloadButton from '@/app/components/download-button';
 import ElegantTree from '@/app/components/elegant-tree';
 import { ModeToggle } from '@/app/components/mode-toggle';
 import Toolbar from '@/app/components/toolbar';
-import { cleanSrc, defaultPathes } from '@/lib/utils';
+import { cleanSrc, defaultPaths } from '@/lib/utils';
 import {
   ChangeEventHandler,
   ClipboardEventHandler,
@@ -13,7 +13,7 @@ import {
 } from 'react';
 
 export default function Home() {
-  const [input, setInput] = useState(defaultPathes.join('\n'));
+  const [input, setInput] = useState(defaultPaths.join('\n'));
   const ref = useRef<HTMLDivElement>(null);
 
   const handleInputChange: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
